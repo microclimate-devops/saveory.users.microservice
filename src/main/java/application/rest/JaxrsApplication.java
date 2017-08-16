@@ -5,5 +5,5 @@ import javax.ws.rs.core.Application;
 
 @ApplicationPath("/")
 public class JaxrsApplication extends Application {
-// Testing the status of the pipeline
+	
 }
