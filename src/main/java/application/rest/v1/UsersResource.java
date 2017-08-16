@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 import com.ibm.json.java.JSONObject;
 import application.database.UsersDatabaseHandler;
 
-@Path("/users")
+@Path("users")
 public class UsersResource {
 	
 	@POST
