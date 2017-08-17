@@ -46,11 +46,13 @@ public class UsersResource {
 		String username = (String) body.get("username"); 
 		String password = (String) body.get("password"); 
 		
-		if (!UsersDatabaseHandler.checkExistingUsername(username)) {
+		if (!(UsersDatabaseHandler.checkExistingUsername(username))) {
+			System.out.println("Here in the internal server error"); 
 			response.put("message", "User not found"); 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
 		}
 		
+		System.out.println("Made it to the compare password");
 		boolean match = UsersDatabaseHandler.comparePassword(username, password); 
 		
 		if (!match) {
