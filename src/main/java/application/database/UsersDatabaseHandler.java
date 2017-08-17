@@ -6,12 +6,11 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.common.hash.Hashing;
-import org.bson.Document;
-import org.bson.types.ObjectId;
-
 import java.nio.charset.StandardCharsets;
 
 public class UsersDatabaseHandler {
@@ -20,7 +19,7 @@ public class UsersDatabaseHandler {
    public static final String DATABASE_CLIENT_URI = "mongodb://sapphires:saveoryArmory@sapphires-db.rtp.raleigh.ibm.com/saveory_app";
    public static final String DATABASE_COLLECTION_NAME = "users";
    private static MongoClient mongo_instance;
-
+   
    	
    /**
     * 
@@ -67,13 +66,13 @@ public class UsersDatabaseHandler {
    /**
     * 
     */
-   public static boolean checkExistingUser(String id) {
+   public static boolean checkExistingUser(String token) {
 	   
 	   BasicDBObject userQuery = new BasicDBObject(); 
-	   userQuery.put("_id", id); 
+	   userQuery.put("_id", token); 
 	   FindIterable<Document> users = UsersDatabaseHandler.getUsersCollection().find(userQuery); 
 	   
-	   // Return false if that username is not found, true if we found that username
+	   // Return false if that user token is not found, true if we found that user token
 	   return users == null ? false : true; 
    }
    

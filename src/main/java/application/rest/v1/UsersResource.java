@@ -28,20 +28,20 @@ public class UsersResource {
 		String password = (String) body.get("password");
 		
 		String token = UsersDatabaseHandler.addNewUser(name, email, username, password); 
-		
 		JSONObject response = new JSONObject();
-		response.put("bearer_token", token); 
+		response.put("token", token); 
+		
 		return Response.ok(JSON.serialize(response)).build();
 	}
 	
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/user/{userId}")
-	public Response retrieveUser(@Context final HttpServletRequest request, @PathParam("userId") String userId) {
+	@Path("/user/{userToken}")
+	public Response retrieveUser(@Context final HttpServletRequest request, @PathParam("userToken") String userToken) {
 		
-		if (UsersDatabaseHandler.checkExistingUser(userId)) {
-			return Response.ok().entity("User Exists!").build(); 
+		if (UsersDatabaseHandler.checkExistingUser(userToken)) {
+			return Response.ok().entity("User " + userToken + " Exists!").build(); 
 		}
 		return Response.status(Response.Status.NOT_FOUND).build(); 
 	}
