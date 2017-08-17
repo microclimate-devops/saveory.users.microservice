@@ -1,6 +1,7 @@
 package application.database;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
@@ -45,10 +46,9 @@ public class UsersDatabaseHandler {
     */
    public static boolean checkExistingUsername(String username) {
 	   
-	   BasicDBObject usernameQuery = new BasicDBObject(); 
+	   Document usernameQuery = new Document(); 
 	   usernameQuery.put("username", "kam1234"); 
 	   FindIterable<Document> users = UsersDatabaseHandler.getUsersCollection().find(usernameQuery); 
-	   
 	   return users == null ? false : true;
    }
    
