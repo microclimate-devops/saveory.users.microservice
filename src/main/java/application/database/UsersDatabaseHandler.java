@@ -19,30 +19,7 @@ public class UsersDatabaseHandler {
    public static final String DATABASE_CLIENT_URI = "mongodb://sapphires:saveoryArmory@sapphires-db.rtp.raleigh.ibm.com/saveory_app";
    public static final String DATABASE_COLLECTION_NAME = "users";
    private static MongoClient mongo_instance;
-   
-   	
-   /**
-    * 
-    */
-   private static MongoClient getMongoClient() {
 
-      if (UsersDatabaseHandler.mongo_instance == null) {
-         MongoClientURI connectionString = new MongoClientURI(UsersDatabaseHandler.DATABASE_CLIENT_URI);
-         UsersDatabaseHandler.mongo_instance = new MongoClient(connectionString);
-      }
-      return UsersDatabaseHandler.mongo_instance;
-   }
-
-   
-   /**
-    * 
-    */
-   private static MongoCollection<Document> getUsersCollection() {
-
-      MongoDatabase database = UsersDatabaseHandler.getMongoClient().getDatabase(UsersDatabaseHandler.DATABASE_NAME);
-      return database.getCollection(UsersDatabaseHandler.DATABASE_COLLECTION_NAME);
-   }
-   
    
    /**
     * 
@@ -79,13 +56,11 @@ public class UsersDatabaseHandler {
    /**
     * 
     */
-   public static boolean checkExistingUser(String token) {
+   public static boolean comparePassword(String username, String password) {
 	   
-	   BasicDBObject userQuery = new BasicDBObject(); 
-	   userQuery.put("_id", token); 
-	   FindIterable<Document> users = UsersDatabaseHandler.getUsersCollection().find(userQuery); 
+	   FindIterable<Document> users = queryByUsernameAndPassword(username, password); 
 	   
-	   // Return false if that user token is not found, true if we found that user token
+	   // Return false if that password does not match with the username
 	   return users == null ? false : true; 
    }
    
@@ -93,17 +68,55 @@ public class UsersDatabaseHandler {
    /**
     * 
     */
-   public static boolean comparePassword(String username, String password) {
+   public static String retrieveUserToken(String username, String password) {
+	   
+	   FindIterable<Document> users = queryByUsernameAndPassword(username, password); 
+	   
+	   if (users == null) {
+		   return "No user token found"; 
+	   }
+	   
+	   Document user = users.first();
+	   ObjectId token = user.getObjectId("_id"); 
+	   return token.toString(); 
+   }
+   
+   
+   /**
+    * 
+    */
+   private static MongoClient getMongoClient() {
+
+      if (UsersDatabaseHandler.mongo_instance == null) {
+         MongoClientURI connectionString = new MongoClientURI(UsersDatabaseHandler.DATABASE_CLIENT_URI);
+         UsersDatabaseHandler.mongo_instance = new MongoClient(connectionString);
+      }
+      return UsersDatabaseHandler.mongo_instance;
+   }
+   
+   
+   /**
+    * 
+    */
+   private static MongoCollection<Document> getUsersCollection() {
+
+      MongoDatabase database = UsersDatabaseHandler.getMongoClient().getDatabase(UsersDatabaseHandler.DATABASE_NAME);
+      return database.getCollection(UsersDatabaseHandler.DATABASE_COLLECTION_NAME);
+   }
+   
+   
+   /**
+    * 
+    */
+   private static FindIterable<Document> queryByUsernameAndPassword(String username, String password) {
 	   
 	   String hashAndSalt = Hashing.sha256().hashString(username + password, StandardCharsets.UTF_8).toString(); 
 	   BasicDBObject query = new BasicDBObject(); 
 	   List<BasicDBObject> params = new ArrayList<>(); 
 	   params.add(new BasicDBObject("username", username)); 
 	   params.add(new BasicDBObject("password", hashAndSalt)); 
-	   query.put("$and", params); 
-	   FindIterable<Document> users = UsersDatabaseHandler.getUsersCollection().find(query); 
+	   query.put("$and", params);
 	   
-	   // Return false if that password does not match with the username
-	   return users == null ? false : true; 
+	   return UsersDatabaseHandler.getUsersCollection().find(query); 
    }
 }
