@@ -44,7 +44,10 @@ public class UsersResource {
 		
 		JSONObject response = new JSONObject();
 		String username = (String) body.get("username"); 
-		String password = (String) body.get("password"); 
+		String password = (String) body.get("password");
+		
+		boolean userExists = UsersDatabaseHandler.checkExistingUsername(username); 
+		System.out.println(userExists);
 		
 		if (!(UsersDatabaseHandler.checkExistingUsername(username))) {
 			System.out.println("Here in the internal server error"); 
