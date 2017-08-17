@@ -49,6 +49,10 @@ public class UsersDatabaseHandler {
 	   usernameQuery.put("username", username); 
 	   FindIterable<Document> users = UsersDatabaseHandler.getUsersCollection().find(usernameQuery); 
 	   
+	   for (Document user : users) {
+		   System.out.println(user.toJson());
+	   }
+	   
 	   return users == null ? false : true;
    }
    
