@@ -50,7 +50,7 @@ public class UsersResource {
 		String username = (String) body.get("username"); 
 		String password = (String) body.get("password");
 		FindIterable<Document> results = UsersDatabaseHandler.checkExistingUsername(username);
-		return Response.ok(results.toString()).build(); 
+		return Response.ok(results.first().toJson()).build(); 
 		
 		
 		
