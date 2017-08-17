@@ -7,7 +7,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.bson.Document;
+
 import com.ibm.json.java.JSONObject;
+import com.mongodb.client.FindIterable;
 import com.mongodb.util.JSON;
 import application.database.UsersDatabaseHandler;
 
@@ -21,11 +25,11 @@ public class UsersResource {
 		
 		JSONObject response = new JSONObject();
 		String username = (String) body.get("username"); 
-
+/**
 		if (UsersDatabaseHandler.checkExistingUsername(username)) {
 			response.put("message", "Username already exists");
 			return Response.status(Response.Status.CONFLICT).entity(JSON.serialize(response)).build(); 
-		}
+		} **/
 		
 		String name = (String) body.get("name"); 
 		String email = (String) body.get("email"); 
@@ -45,17 +49,19 @@ public class UsersResource {
 		JSONObject response = new JSONObject();
 		String username = (String) body.get("username"); 
 		String password = (String) body.get("password");
+		FindIterable<Document> results = UsersDatabaseHandler.checkExistingUsername(username); 
+		return Response.ok(results).build(); 
 		
-		boolean userExists = UsersDatabaseHandler.checkExistingUsername(username); 
-		System.out.println(userExists);
 		
+		
+		
+		
+		/**
 		if (!(UsersDatabaseHandler.checkExistingUsername(username))) {
-			System.out.println("Here in the internal server error"); 
 			response.put("message", "User not found"); 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
 		}
-		
-		System.out.println("Made it to the compare password");
+
 		boolean match = UsersDatabaseHandler.comparePassword(username, password); 
 		
 		if (!match) {
@@ -65,6 +71,6 @@ public class UsersResource {
 		
 		response.put("message", "User is authenticated"); 
 		response.put("token", UsersDatabaseHandler.retrieveUserToken(username, password)); 
-		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build(); 
+		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build(); **/
 	}
 }
