@@ -41,7 +41,7 @@ public class UsersResource {
 	public Response retrieveUser(@Context final HttpServletRequest request, @PathParam("userId") String userId) {
 		
 		if (UsersDatabaseHandler.checkExistingUser(userId)) {
-			return Response.ok("User exists!").build();
+			return Response.ok().entity("User Exists!").build(); 
 		}
 		return Response.status(Response.Status.NOT_FOUND).build(); 
 	}
