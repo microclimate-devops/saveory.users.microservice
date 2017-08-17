@@ -22,16 +22,22 @@ public class UsersResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createUser(@Context final HttpServletRequest request, JSONObject body) {
 		
+		String username = (String) body.get("username"); 
+		
+		if (UsersDatabaseHandler.checkExistingUsername(username)) {
+			
+			return Response.status(Response.Status.CONFLICT).entity("Username already exists").build(); 
+		}
+		
 		String name = (String) body.get("name"); 
 		String email = (String) body.get("email"); 
-		String username = (String) body.get("username"); 
 		String password = (String) body.get("password");
-		
 		String token = UsersDatabaseHandler.addNewUser(name, email, username, password); 
+		
 		JSONObject response = new JSONObject();
 		response.put("token", token); 
 		
-		return Response.ok(JSON.serialize(response)).build();
+		return Response.ok(JSON.serialize(response)).entity("User has been created").build(); 
 	}
 	
 	

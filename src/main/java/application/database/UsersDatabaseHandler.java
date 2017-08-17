@@ -66,6 +66,19 @@ public class UsersDatabaseHandler {
    /**
     * 
     */
+   public static boolean checkExistingUsername(String username) {
+	   
+	   BasicDBObject usernameQuery = new BasicDBObject(); 
+	   usernameQuery.put("username", username); 
+	   FindIterable<Document> users = UsersDatabaseHandler.getUsersCollection().find(usernameQuery); 
+	   
+	   return users == null ? false : true;
+   }
+   
+   
+   /**
+    * 
+    */
    public static boolean checkExistingUser(String token) {
 	   
 	   BasicDBObject userQuery = new BasicDBObject(); 
