@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.common.hash.Hashing;
 import org.bson.Document;
+import org.bson.types.ObjectId;
+
 import java.nio.charset.StandardCharsets;
 
 public class UsersDatabaseHandler {
@@ -46,23 +48,29 @@ public class UsersDatabaseHandler {
    /**
     * 
     */
-   public static void addNewUser(String username, String password) {
+   public static String addNewUser(String name, String email, String username, String password) {
 	   
-	   String hashAndSalt = Hashing.sha256().hashString(username + password, StandardCharsets.UTF_8).toString(); 
 	   Document newUser = new Document();
+	   newUser.append("name", name); 
+	   newUser.append("email", email); 
 	   newUser.append("username", username); 
+
+	   String hashAndSalt = Hashing.sha256().hashString(username + password, StandardCharsets.UTF_8).toString(); 
 	   newUser.append("password", hashAndSalt); 
+	   
 	   UsersDatabaseHandler.getUsersCollection().insertOne(newUser);
+	   ObjectId token = newUser.getObjectId("_id");
+	   return token.toString();
    }
    
    
    /**
     * 
     */
-   public static boolean checkExistingUser(String username) {
+   public static boolean checkExistingUser(String id) {
 	   
 	   BasicDBObject userQuery = new BasicDBObject(); 
-	   userQuery.put("username", username); 
+	   userQuery.put("_id", id); 
 	   FindIterable<Document> users = UsersDatabaseHandler.getUsersCollection().find(userQuery); 
 	   
 	   // Return false if that username is not found, true if we found that username
