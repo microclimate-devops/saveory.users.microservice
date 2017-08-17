@@ -46,12 +46,8 @@ public class UsersDatabaseHandler {
    public static boolean checkExistingUsername(String username) {
 	   
 	   BasicDBObject usernameQuery = new BasicDBObject(); 
-	   usernameQuery.put("username", username); 
+	   usernameQuery.put("username", "kam1234"); 
 	   FindIterable<Document> users = UsersDatabaseHandler.getUsersCollection().find(usernameQuery); 
-	   
-	   for (Document user : users) {
-		   System.out.println(user.toJson());
-	   }
 	   
 	   return users == null ? false : true;
    }
