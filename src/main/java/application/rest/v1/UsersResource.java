@@ -18,6 +18,7 @@ import application.database.UsersDatabaseHandler;
 @Path("users")
 public class UsersResource {
 	
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createUser(@Context final HttpServletRequest request, JSONObject body) {
@@ -25,8 +26,10 @@ public class UsersResource {
 		String username = (String) body.get("username"); 
 		
 		if (UsersDatabaseHandler.checkExistingUsername(username)) {
-			
-			return Response.status(Response.Status.CONFLICT).entity("Username already exists").build(); 
+			JSONObject resp = new JSONObject(); 
+			resp.put("Status", Response.Status.CONFLICT); 
+			resp.put("reason", "Username already exists"); 
+			return Response.status(Response.Status.CONFLICT).entity(JSON.serialize(resp)).build(); 
 		}
 		
 		String name = (String) body.get("name"); 
