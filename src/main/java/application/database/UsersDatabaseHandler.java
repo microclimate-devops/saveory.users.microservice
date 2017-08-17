@@ -46,10 +46,10 @@ public class UsersDatabaseHandler {
     */
    public static boolean checkExistingUsername(String username) {
 	   
-	   Document usernameQuery = new Document(); 
-	   usernameQuery.put("username", "kam1234"); 
-	   FindIterable<Document> users = UsersDatabaseHandler.getUsersCollection().find(usernameQuery); 
-	   return users == null ? false : true;
+	   BasicDBObject usernameQuery = new BasicDBObject(); 
+	   usernameQuery.put("username", username);
+	   long numUsers = UsersDatabaseHandler.getUsersCollection().count(usernameQuery); 
+	   return numUsers == 0 ? false : true;
    }
    
    
