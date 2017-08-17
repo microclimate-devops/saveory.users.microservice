@@ -11,6 +11,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import com.ibm.json.java.JSONObject;
+import com.mongodb.util.JSON;
+
 import application.database.UsersDatabaseHandler;
 
 @Path("users")
@@ -29,7 +31,7 @@ public class UsersResource {
 		
 		JSONObject response = new JSONObject();
 		response.put("bearer_token", token); 
-		return Response.ok(response).build();
+		return Response.ok(JSON.serialize(response)).build();
 	}
 	
 	
@@ -39,10 +41,8 @@ public class UsersResource {
 	public Response retrieveUser(@Context final HttpServletRequest request, @PathParam("userId") String userId) {
 		
 		if (UsersDatabaseHandler.checkExistingUser(userId)) {
-			
 			return Response.ok("User exists!").build();
 		}
-		
 		return Response.status(Response.Status.NOT_FOUND).build(); 
 	}
 }
