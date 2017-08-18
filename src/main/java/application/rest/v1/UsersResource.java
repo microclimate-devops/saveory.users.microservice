@@ -67,4 +67,5 @@ public class UsersResource {
 		response.put("token", UsersDatabaseHandler.retrieveUserToken(username, password)); 
 		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build();
 	}
+	
 }
