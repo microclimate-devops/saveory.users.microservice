@@ -7,11 +7,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.bson.Document;
-
 import com.ibm.json.java.JSONObject;
-import com.mongodb.client.FindIterable;
 import com.mongodb.util.JSON;
 import application.database.UsersDatabaseHandler;
 
@@ -24,15 +20,20 @@ public class UsersResource {
 	public Response createUser(@Context final HttpServletRequest request, JSONObject body) {
 		
 		JSONObject response = new JSONObject();
+		
 		String username = (String) body.get("username"); 
-
 		if (UsersDatabaseHandler.checkExistingUsername(username)) {
 			response.put("message", "Username already exists");
 			return Response.status(Response.Status.CONFLICT).entity(JSON.serialize(response)).build(); 
 		}
 		
-		String name = (String) body.get("name"); 
 		String email = (String) body.get("email"); 
+		if (UsersDatabaseHandler.checkExistingEmail(email)) {
+			response.put("message", "Email already exists"); 
+			return Response.status(Response.Status.CONFLICT).entity(JSON.serialize(response)).build(); 
+		}
+		
+		String name = (String) body.get("name"); 
 		String password = (String) body.get("password");
 		String token = UsersDatabaseHandler.addNewUser(name, email, username, password); 
 		response.put("token", token);

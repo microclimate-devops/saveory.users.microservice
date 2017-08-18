@@ -1,19 +1,17 @@
 package application.database;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+import com.google.common.hash.Hashing;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
-import org.bson.types.ObjectId;
-import java.util.ArrayList;
-import java.util.List;
-import com.google.common.hash.Hashing;
-import java.nio.charset.StandardCharsets;
 
 public class UsersDatabaseHandler {
 
@@ -47,9 +45,17 @@ public class UsersDatabaseHandler {
     */
    public static boolean checkExistingUsername(String username) {
 	   
-	   BasicDBObject usernameQuery = new BasicDBObject(); 
-	   usernameQuery.put("username", username);
-	   long numberOfUsers = UsersDatabaseHandler.getUsersCollection().count(usernameQuery); 
+	   long numberOfUsers = queryIfUserExists("username", username); 
+	   return numberOfUsers == 0 ? false : true; 
+   }
+   
+   
+   /**
+    * 
+    */
+   public static boolean checkExistingEmail(String email) {
+	   
+	   long numberOfUsers = queryIfUserExists("email", email); 
 	   return numberOfUsers == 0 ? false : true; 
    }
    
@@ -59,7 +65,7 @@ public class UsersDatabaseHandler {
     */
    public static boolean comparePassword(String username, String password) {
 	   
-	   FindIterable<Document> users = queryByUsernameAndPassword(username, password); 
+	   FindIterable<Document> users = queryUsernameAndPassword(username, password); 
 	   
 	   // If we haven't found a user, that meant the query wasn't a match, so return false 
 	   return users.first() == null ? false : true; 
@@ -71,10 +77,9 @@ public class UsersDatabaseHandler {
     */
    public static String retrieveUserToken(String username, String password) {
 	   
-	   FindIterable<Document> users = queryByUsernameAndPassword(username, password);
+	   FindIterable<Document> users = queryUsernameAndPassword(username, password);
 	   
 	   if (users.first() == null) {
-		   
 		   return "No user token found"; 
 	   }
 	   
@@ -110,7 +115,7 @@ public class UsersDatabaseHandler {
    /**
     * 
     */
-   private static FindIterable<Document> queryByUsernameAndPassword(String username, String password) {
+   private static FindIterable<Document> queryUsernameAndPassword(String username, String password) {
 	   
 	   String hashAndSalt = Hashing.sha256().hashString(username + password, StandardCharsets.UTF_8).toString(); 
 	   BasicDBObject query = new BasicDBObject(); 
@@ -121,4 +126,16 @@ public class UsersDatabaseHandler {
 	   
 	   return UsersDatabaseHandler.getUsersCollection().find(query); 
    }
+   
+   
+   /**
+    * 
+    */
+   private static long queryIfUserExists(String queryField, String queryString) {
+	   
+	   BasicDBObject query = new BasicDBObject(); 
+	   query.put(queryField, queryString); 
+	   return UsersDatabaseHandler.getUsersCollection().count(query); 
+   }
+   
 }
