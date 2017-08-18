@@ -24,13 +24,13 @@ public class UsersResource {
 		String username = (String) body.get("username"); 
 		if (UsersDatabaseHandler.checkExistingUsername(username)) {
 			response.put("message", "Username already exists");
-			return Response.status(Response.Status.CONFLICT).entity(JSON.serialize(response)).build(); 
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
 		}
 		
 		String email = (String) body.get("email"); 
 		if (UsersDatabaseHandler.checkExistingEmail(email)) {
 			response.put("message", "Email already exists"); 
-			return Response.status(Response.Status.CONFLICT).entity(JSON.serialize(response)).build(); 
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
 		}
 		
 		String name = (String) body.get("name"); 
