@@ -6,6 +6,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -44,12 +45,12 @@ public class UsersDatabaseHandler {
    /**
     * 
     */
-   public static FindIterable<Document> checkExistingUsername(String username) {
+   public static boolean checkExistingUsername(String username) {
 	   
 	   BasicDBObject usernameQuery = new BasicDBObject(); 
 	   usernameQuery.put("username", username);
-	   FindIterable<Document> results = UsersDatabaseHandler.getUsersCollection().find(usernameQuery);
-	   return results; 
+	   long numberOfUsers = UsersDatabaseHandler.getUsersCollection().count(usernameQuery); 
+	   return numberOfUsers == 0 ? false : true; 
    }
    
    
@@ -60,8 +61,8 @@ public class UsersDatabaseHandler {
 	   
 	   FindIterable<Document> users = queryByUsernameAndPassword(username, password); 
 	   
-	   // Return false if that password does not match with the username
-	   return users == null ? false : true; 
+	   // If we haven't found a user, that meant the query wasn't a match, so return false 
+	   return users.first() == null ? false : true; 
    }
    
    
@@ -70,9 +71,10 @@ public class UsersDatabaseHandler {
     */
    public static String retrieveUserToken(String username, String password) {
 	   
-	   FindIterable<Document> users = queryByUsernameAndPassword(username, password); 
+	   FindIterable<Document> users = queryByUsernameAndPassword(username, password);
 	   
-	   if (users == null) {
+	   if (users.first() == null) {
+		   
 		   return "No user token found"; 
 	   }
 	   

@@ -25,11 +25,11 @@ public class UsersResource {
 		
 		JSONObject response = new JSONObject();
 		String username = (String) body.get("username"); 
-/**
+
 		if (UsersDatabaseHandler.checkExistingUsername(username)) {
 			response.put("message", "Username already exists");
 			return Response.status(Response.Status.CONFLICT).entity(JSON.serialize(response)).build(); 
-		} **/
+		}
 		
 		String name = (String) body.get("name"); 
 		String email = (String) body.get("email"); 
@@ -49,14 +49,7 @@ public class UsersResource {
 		JSONObject response = new JSONObject();
 		String username = (String) body.get("username"); 
 		String password = (String) body.get("password");
-		FindIterable<Document> results = UsersDatabaseHandler.checkExistingUsername(username);
-		return Response.ok(results.first()).build(); 
 		
-		
-		
-		
-		
-		/**
 		if (!(UsersDatabaseHandler.checkExistingUsername(username))) {
 			response.put("message", "User not found"); 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
@@ -71,6 +64,6 @@ public class UsersResource {
 		
 		response.put("message", "User is authenticated"); 
 		response.put("token", UsersDatabaseHandler.retrieveUserToken(username, password)); 
-		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build(); **/
+		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build();
 	}
 }
