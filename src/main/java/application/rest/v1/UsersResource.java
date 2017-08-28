@@ -14,34 +14,39 @@ import application.database.UsersDatabaseHandler;
 @Path("users")
 public class UsersResource {
 	
-	
+	//Signup	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createUser(@Context final HttpServletRequest request, JSONObject body) {
 		
 		JSONObject response = new JSONObject();
 		
+		//Make sure username is unique	
 		String username = (String) body.get("username"); 
 		if (UsersDatabaseHandler.checkExistingUsername(username)) {
 			response.put("message", "Username already exists");
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
 		}
 		
+
+		//Make sure email is unique
 		String email = (String) body.get("email"); 
 		if (UsersDatabaseHandler.checkExistingEmail(email)) {
 			response.put("message", "Email already exists"); 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
 		}
 		
+		//Setup new user data and add to database
 		String name = (String) body.get("name"); 
 		String password = (String) body.get("password");
 		String token = UsersDatabaseHandler.addNewUser(name, email, username, password); 
+		//Give the token back so other services can authenticate the user
 		response.put("token", token);
 		
 		return Response.status(Response.Status.CREATED).entity(JSON.serialize(response)).build();
 	}
 	
-	
+	//Login
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/login")
@@ -51,11 +56,13 @@ public class UsersResource {
 		String username = (String) body.get("username"); 
 		String password = (String) body.get("password");
 		
+		//Make sure the username exists
 		if (!(UsersDatabaseHandler.checkExistingUsername(username))) {
 			response.put("message", "User not found"); 
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
 		}
-
+		
+		//Compare the inputed password to the user's actual password
 		boolean match = UsersDatabaseHandler.comparePassword(username, password); 
 		
 		if (!match) {
@@ -63,6 +70,7 @@ public class UsersResource {
 			return Response.status(Response.Status.UNAUTHORIZED).entity(JSON.serialize(response)).build(); 
 		}
 		
+		//Respond with message and user token
 		response.put("message", "User is authenticated"); 
 		response.put("token", UsersDatabaseHandler.retrieveUserToken(username, password)); 
 		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build();
