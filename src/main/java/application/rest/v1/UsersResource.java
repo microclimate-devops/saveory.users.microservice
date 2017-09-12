@@ -40,8 +40,10 @@ public class UsersResource {
 		String name = (String) body.get("name"); 
 		String password = (String) body.get("password");
 		String token = UsersDatabaseHandler.addNewUser(name, email, username, password); 
-		//Give the token back so other services can authenticate the user
+		//Give the token back so other services can authenticate the user and include name and username for UI
 		response.put("token", token);
+		response.put("name", name);
+		response.put("username", username);
 		
 		return Response.status(Response.Status.CREATED).entity(JSON.serialize(response)).build();
 	}
@@ -70,9 +72,12 @@ public class UsersResource {
 			return Response.status(Response.Status.UNAUTHORIZED).entity(JSON.serialize(response)).build(); 
 		}
 		
-		//Respond with message and user token
+		//Respond with message and user info
 		response.put("message", "User is authenticated"); 
 		response.put("token", UsersDatabaseHandler.retrieveUserToken(username, password)); 
+		response.put("name", UsersDatabaseHandler.getUserField(username, password, "name"));
+		response.put("username", username);
+
 		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build();
 	}
 	

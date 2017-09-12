@@ -87,6 +87,19 @@ public class UsersDatabaseHandler {
 	   ObjectId token = user.getObjectId("_id"); 
 	   return token.toString(); 
    }
+
+   public static String getUserField(String username, String password, String field){
+	   FindIterable<Document> users = queryUsernameAndPassword(username, password);
+	   
+	   if (users.first() == null) {
+		   return "No data in field "+field+" for user "+username; 
+	   }
+	   
+	   Document user = users.first();
+	   String val = user.getString(field); 
+	   return val; 
+	
+   }
    
    
    /**
@@ -137,5 +150,7 @@ public class UsersDatabaseHandler {
 	   query.put(queryField, queryString); 
 	   return UsersDatabaseHandler.getUsersCollection().count(query); 
    }
+
+   
    
 }
