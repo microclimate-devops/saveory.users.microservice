@@ -2,8 +2,11 @@ package application.rest.v1;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -44,6 +47,7 @@ public class UsersResource {
 		response.put("token", token);
 		response.put("name", name);
 		response.put("username", username);
+		response.put("email", email);
 		
 		return Response.status(Response.Status.CREATED).entity(JSON.serialize(response)).build();
 	}
@@ -77,8 +81,34 @@ public class UsersResource {
 		response.put("token", UsersDatabaseHandler.retrieveUserToken(username, password)); 
 		response.put("name", UsersDatabaseHandler.getUserField(username, password, "name"));
 		response.put("username", username);
+		response.put("email", UsersDatabaseHandler.getUserField(username, password, "email"));
 
 		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build();
+	}
+
+	//Update
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{user_token}")
+	public Response updateUser(@PathParam("user_token") final String token, JSONObject body){
+		JSONObject response = new JSONObject();
+		
+		//Make sure the token exists
+		if(!UsersDatabaseHandler.checkExistingToken(token)){
+			response.put("message", "Token invalid");	
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
+		}
+
+		if(!UsersDatabaseHandler.updateUser(token, body)) {
+			response.put("message", "Could not find user data for that token");	
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
+		}
+		
+		response.put("message", "updated user");	
+		response.put("token", token);
+		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build();
+		
 	}
 	
 }

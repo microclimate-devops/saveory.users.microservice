@@ -12,6 +12,8 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
+import com.ibm.json.java.JSONObject;
 
 public class UsersDatabaseHandler {
 
@@ -20,7 +22,14 @@ public class UsersDatabaseHandler {
    public static final String DATABASE_COLLECTION_NAME = "users";
    private static MongoClient mongo_instance;
 
+   public static Document getUser(String token){
+	return UsersDatabaseHandler.getUsersCollection().find(new BasicDBObject("_id", new ObjectId(token))).first();
+   }
    
+   private static String hashAndSaltPassword(String password, String username) {
+	   return  Hashing.sha256().hashString(username + password, StandardCharsets.UTF_8).toString(); 
+   }
+ 
    /**
     * 
     */
@@ -31,12 +40,50 @@ public class UsersDatabaseHandler {
 	   newUser.append("email", email); 
 	   newUser.append("username", username); 
 
-	   String hashAndSalt = Hashing.sha256().hashString(username + password, StandardCharsets.UTF_8).toString(); 
+	   String hashAndSalt = hashAndSaltPassword(password, username); 
 	   newUser.append("password", hashAndSalt); 
 	   
 	   UsersDatabaseHandler.getUsersCollection().insertOne(newUser);
 	   ObjectId token = newUser.getObjectId("_id");
 	   return token.toString();
+   }
+
+   public static void deleteUser(String token){
+	//Get the collection and remove the entry matching the token, which maps to document _ids
+	UsersDatabaseHandler.getUsersCollection().deleteOne(eq("_id", token));   
+   }
+
+   public static boolean updateUser(String token, JSONObject newData){
+	//Try to get the user data using the given token
+	Document userData = getUser(token);
+	if(userData == null){
+		return false;
+	}
+	
+	//Get the username
+	String username = (String) newData.get("username");
+	if(username == null) {
+		username = userData.getString("username");
+	}
+	
+	//update data
+	String key;
+	String data;
+	for(Object field : newData.keySet()) {
+		key = (String) field;
+		data = (String) newData.get(field);
+		
+		//Hash if password
+		if(key == "password") {
+			data = hashAndSaltPassword(data, username);
+		}
+		
+		userData.replace(key, data);
+	}
+
+	//Update database
+	getUsersCollection().replaceOne(new BasicDBObject("_id", new ObjectId(token)), userData);
+	return true;
    }
    
    
@@ -57,6 +104,11 @@ public class UsersDatabaseHandler {
 	   
 	   long numberOfUsers = queryIfUserExists("email", email); 
 	   return numberOfUsers == 0 ? false : true; 
+   }
+
+   public static boolean checkExistingToken(String token){
+	   BasicDBObject query = new BasicDBObject("_id", new ObjectId(token)); 
+	   return UsersDatabaseHandler.getUsersCollection().count(query) > 0; 
    }
    
    
@@ -130,7 +182,7 @@ public class UsersDatabaseHandler {
     */
    private static FindIterable<Document> queryUsernameAndPassword(String username, String password) {
 	   
-	   String hashAndSalt = Hashing.sha256().hashString(username + password, StandardCharsets.UTF_8).toString(); 
+	   String hashAndSalt = hashAndSaltPassword(password, username); 
 	   BasicDBObject query = new BasicDBObject(); 
 	   List<BasicDBObject> params = new ArrayList<>(); 
 	   params.add(new BasicDBObject("username", username)); 
