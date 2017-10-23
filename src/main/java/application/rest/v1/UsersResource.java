@@ -91,14 +91,21 @@ public class UsersResource {
 	@Path("/{user_token}")
 	public Response updateUser(@PathParam("user_token") final String token, JSONObject body){
 		JSONObject response = new JSONObject();
-		String username = (String
 		
 		//Make sure the token exists
 		if(!UsersDatabaseHandler.checkExistingToken(token)){
-			response.put("message": "Token invalid");	
+			response.put("message", "Token invalid");	
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
 		}
 
+		if(!UsersDatabaseHandler.updateUser(token, body)) {
+			response.put("message", "Could not find user data for that token");	
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
+		}
+		
+		response.put("message", "updated user");	
+		response.put("token", token);
+		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build();
 		
 	}
 	
