@@ -23,7 +23,7 @@ public class UsersDatabaseHandler {
    private static MongoClient mongo_instance;
 
    public static Document getUser(String token){
-	return UsersDatabaseHandler.getUsersCollection().find(eq("_id", token)).first();
+	return UsersDatabaseHandler.getUsersCollection().find(new BasicDBObject("_id", new ObjectId(token))).first();
    }
    
    private static String hashAndSaltPassword(String password, String username) {
@@ -107,8 +107,8 @@ public class UsersDatabaseHandler {
    }
 
    public static boolean checkExistingToken(String token){
-	   long numberOfUsers = queryIfUserExists("_id", token);
-	   return numberOfUsers == 0 ? false : true;
+	   BasicDBObject query = new BasicDBObject("_id", new ObjectId(token)); 
+	   return UsersDatabaseHandler.getUsersCollection().count(query) > 0; 
    }
    
    
