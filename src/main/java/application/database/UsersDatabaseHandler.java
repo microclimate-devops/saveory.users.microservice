@@ -82,7 +82,7 @@ public class UsersDatabaseHandler {
 	}
 
 	//Update database
-	getUsersCollection().updateOne(eq("_id", token), userData);
+	getUsersCollection().replaceOne(eq("_id", token), userData);
 	return true;
    }
    
