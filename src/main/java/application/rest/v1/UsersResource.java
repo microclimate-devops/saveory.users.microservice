@@ -47,6 +47,7 @@ public class UsersResource {
 		response.put("token", token);
 		response.put("name", name);
 		response.put("username", username);
+		response.put("email", email);
 		
 		return Response.status(Response.Status.CREATED).entity(JSON.serialize(response)).build();
 	}
@@ -80,6 +81,7 @@ public class UsersResource {
 		response.put("token", UsersDatabaseHandler.retrieveUserToken(username, password)); 
 		response.put("name", UsersDatabaseHandler.getUserField(username, password, "name"));
 		response.put("username", username);
+		response.put("email", UsersDatabaseHandler.getUserField(username, password, "email"));
 
 		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build();
 	}
