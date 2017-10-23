@@ -82,7 +82,7 @@ public class UsersDatabaseHandler {
 	}
 
 	//Update database
-	getUsersCollection().replaceOne(eq("_id", token), userData);
+	getUsersCollection().replaceOne(new BasicDBObject("_id", new ObjectId(token)), userData);
 	return true;
    }
    
