@@ -12,6 +12,7 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.ibm.json.java.JSONObject;
 
 public class UsersDatabaseHandler {
 
@@ -20,7 +21,10 @@ public class UsersDatabaseHandler {
    public static final String DATABASE_COLLECTION_NAME = "users";
    private static MongoClient mongo_instance;
 
-   
+   public static Document getUser(String token){
+	return UsersDatabaseHandler.getUsersCollection().find(eq("_id", token)).first();
+   }
+ 
    /**
     * 
     */
@@ -37,6 +41,23 @@ public class UsersDatabaseHandler {
 	   UsersDatabaseHandler.getUsersCollection().insertOne(newUser);
 	   ObjectId token = newUser.getObjectId("_id");
 	   return token.toString();
+   }
+
+   public static String deleteUser(String token){
+	//Get the collection and remove the entry matching the token, which maps to document _ids
+	UsersDatabaseHandler.getUsersCollection().deleteOne(eq("_id", token));   
+   }
+
+   public static boolean updateUser(String token, JSONObject newData){
+	//Try to get the user data using the given token
+	Document userData = getUser(token);
+	if(userData == null){
+		return false;
+	}
+
+	
+
+	//Update with 
    }
    
    
@@ -57,6 +78,11 @@ public class UsersDatabaseHandler {
 	   
 	   long numberOfUsers = queryIfUserExists("email", email); 
 	   return numberOfUsers == 0 ? false : true; 
+   }
+
+   public static boolean checkExistingToken(String token){
+	   long numberOfUsers = queryIfUserExists("_id", token);
+	   return numberOfUsers == 0 ? false : true;
    }
    
    
