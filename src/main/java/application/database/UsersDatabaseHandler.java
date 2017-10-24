@@ -118,9 +118,18 @@ public class UsersDatabaseHandler {
 	   return numberOfUsers == 0 ? false : true; 
    }
 
+   /**
+    * 
+    * @param token
+    * @return
+    */
    public static boolean checkExistingToken(String token){
-	   BasicDBObject query = new BasicDBObject("_id", new ObjectId(token)); 
-	   return UsersDatabaseHandler.getUsersCollection().count(query) > 0; 
+	   try {
+		   BasicDBObject query = new BasicDBObject("_id", new ObjectId(token)); 
+		   return UsersDatabaseHandler.getUsersCollection().count(query) > 0; 
+	   } catch (Exception e) {
+		   return false;
+	   }
    }
    
    
