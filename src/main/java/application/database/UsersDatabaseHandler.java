@@ -26,6 +26,18 @@ public class UsersDatabaseHandler {
 	return UsersDatabaseHandler.getUsersCollection().find(new BasicDBObject("_id", new ObjectId(token))).first();
    }
    
+   public static JSONObject getUserJSON(String token) {
+	   JSONObject userJSON = new JSONObject();
+	   Document userData = getUser(token);
+	   
+	   //Add data to json
+	   userJSON.put("username", userData.getString("username"));
+	   userJSON.put("email", userData.getString("email"));
+	   userJSON.put("name", userData.getString("name"));
+	   
+	   return userJSON;
+   }
+   
    private static String hashAndSaltPassword(String password, String username) {
 	   return  Hashing.sha256().hashString(username + password, StandardCharsets.UTF_8).toString(); 
    }

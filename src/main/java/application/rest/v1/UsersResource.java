@@ -3,6 +3,7 @@ package application.rest.v1;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -15,8 +16,7 @@ import com.mongodb.util.JSON;
 import application.database.UsersDatabaseHandler;
 
 @Path("users")
-public class UsersResource {
-	
+public class UsersResource {	
 	//Signup	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -84,6 +84,22 @@ public class UsersResource {
 		response.put("email", UsersDatabaseHandler.getUserField(username, password, "email"));
 
 		return Response.status(Response.Status.OK).entity(JSON.serialize(response)).build();
+	}
+	
+	//User data
+	@GET
+	@Path("/{user_token}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUser(@PathParam("user_token") final String token) {
+		JSONObject response = new JSONObject();
+		
+		//Make sure the token exists
+		if(!UsersDatabaseHandler.checkExistingToken(token)){
+			response.put("message", "Token invalid");	
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(JSON.serialize(response)).build(); 
+		}
+		
+		return Response.status(Response.Status.OK).entity(JSON.serialize(UsersDatabaseHandler.getUserJSON(token))).build();
 	}
 
 	//Update
