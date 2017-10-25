@@ -31,6 +31,7 @@ public class UsersDatabaseHandler {
 	   Document userData = getUser(token);
 	   
 	   //Add data to json
+	   userJSON.put("token", token);
 	   userJSON.put("username", userData.getString("username"));
 	   userJSON.put("email", userData.getString("email"));
 	   userJSON.put("name", userData.getString("name"));
