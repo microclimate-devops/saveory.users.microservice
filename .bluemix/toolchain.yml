@@ -6,15 +6,17 @@ required:
  - repo
 
 toolchain:
-  name: UserManagement
+  name: saveoryusers
 
 # Github repos
 repo:
-  service_id: githubpublic
+  service_id: hostedgit
   parameters:
-    repo_url: "{{repository}}"
-    type: link
+    repo_url: "{{#zip_url}}{{zip_url}}{{/zip_url}}{{^zip_url}}{{repository}}{{/zip_url}}"
+    repo_name: "{{toolchain.name}}"
+    type: clone
     has_issues: true
+    enable_traceability: true
 
 # Pipelines
 build:
@@ -29,11 +31,10 @@ build:
       CF_APP: "{{deploy.parameters.app-name}}"
       CF_SPACE: "{{deploy.parameters.dev-space}}"
       CF_ORGANIZATION: "{{deploy.parameters.dev-organization}}"
-      CF_REGION_ID: "{{deploy.parameters.dev-region}}"
+      REGION_ID: "{{deploy.parameters.dev-region}}"
      execute: true
     services: ["repo"]
   hidden: ["form"]
-
 
 #Web IDE
 webide:
@@ -45,4 +46,7 @@ deploy:
     $ref: deploy.json
   service-category: pipeline
   parameters:
-    app-name: UserManagement
+    app-name: saveoryusers
+    dev-space: "{{space}}"
+    dev-organization: "{{organization}}"
+    dev-region: "{{region}}"

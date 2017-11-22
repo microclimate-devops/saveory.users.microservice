@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "usermanagement-service"
+  name: "saveoryusers-service"
 spec:
   # if your cluster supports it, uncomment the following to automatically create
   # an external load-balanced IP for the frontend service.
@@ -15,12 +15,12 @@ spec:
     port: 9443
 
   selector:
-    app: "usermanagement-selector"
+    app: "saveoryusers-selector"
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "usermanagement-deployment"
+  name: "saveoryusers-deployment"
 spec:
   # this replicas value is default
   # modify it according to your case
@@ -28,14 +28,14 @@ spec:
   template:
     metadata:
       labels:
-        app: "usermanagement-selector"
+        app: "saveoryusers-selector"
     spec:
       containers:
-      - name: usermanagement
-        image: usermanagement:latest
+      - name: saveoryusers
+        image: saveoryusers:latest
         readinessProbe:
           httpGet:
-            path: /UserManagement/health
+            path: /saveoryusers/health
             port: 9080
           initialDelaySeconds: 20
         # resources:

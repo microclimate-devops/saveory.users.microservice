@@ -1,5 +1,5 @@
 ## Microservice
-Bluemix Microservice Starter in Java
+IBM Cloud Microservice Starter for Java - MicroProfile / Java EE
 
 [![](https://img.shields.io/badge/bluemix-powered-blue.svg)](https://bluemix.net)
 [![Platform](https://img.shields.io/badge/platform-java-lightgrey.svg?style=flat)](https://www.ibm.com/developerworks/learn/java/)
@@ -13,9 +13,9 @@ Bluemix Microservice Starter in Java
 
 ### Summary
 
-The Bluemix Microservice Starter in Java provides a starting point for creating Java microservice applications running on [WebSphere Liberty](https://developer.ibm.com/wasdev/).
+The IBM Cloud Microservice Starter for Java - MicroProfile / Java EE provides a starting point for creating Java microservice applications running on [WebSphere Liberty](https://developer.ibm.com/wasdev/).
 
-To deploy this application to Bluemix using a toolchain click the **Create Toolchain** button.
+To deploy this application to IBM Cloud using a toolchain click the **Create Toolchain** button.
 [![Create Toolchain](https://console.ng.bluemix.net/devops/graphics/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy/)
 
 ### Requirements
@@ -32,13 +32,12 @@ The application is configured to provide JAX-RS REST capabilities, JNDI, JSON pa
 These capabilities are provided through dependencies in the pom.xml file and Liberty features enabled in the server config file found in `src/main/liberty/config/server.xml`.
 
 ### Project contents
-The microservice application has a health endpoint which is accessible at `<host>:<port>/UserManagement/health`. The context root is set in the `src/main/webapp/WEB-INF/ibm-web-ext.xml` file. The ports are set in the pom.xml file and exposed to the CLI in the cli-config.yml file.
+The microservice application has a health endpoint which is accessible at `<host>:<port>/saveoryusers/health`. The context root is set in the `src/main/webapp/WEB-INF/ibm-web-ext.xml` file. The ports are set in the pom.xml file and exposed to the CLI in the cli-config.yml file.
 
-The project contains Bluemix specific files that are used to deploy the application as part of a Bluemix DevOps flow. The `.bluemix` directory contains files used to define the Bluemix toolchain and pipeline for your application. The `manifest.yml` file specifies the name of your application in Bluemix, the timeout value during deployment and which services to bind to.
+The project contains IBM Cloud specific files that are used to deploy the application as part of a IBM Cloud DevOps flow. The `.bluemix` directory contains files used to define the IBM Cloud toolchain and pipeline for your application. The `manifest.yml` file specifies the name of your application in IBM Cloud, the timeout value during deployment and which services to bind to.
 
-This microservice application is configured to connect to the following services :
 
-Credentials are either taken from the VCAP_SERVICES environment variable that Bluemix provides or from environment variables passed in by JNDI (see the server config file `src/main/liberty/config/server.xml`).
+Credentials are either taken from the VCAP_SERVICES environment variable that IBM Cloud provides or from environment variables passed in by JNDI (see the server config file `src/main/liberty/config/server.xml`).
 
 ### Run
 
@@ -55,3 +54,12 @@ The application exposes the following endpoints:
 * Health endpoint: `<host>:<port>/<contextRoot>/health`
 
 The context root is set in the `src/main/webapp/WEB-INF/ibm-web-ext.xml` file. The ports are set in the pom.xml file and exposed to the CLI in the cli-config.yml file.
+
+### Notices
+
+This project was generated using:
+* generator-java v2.8.0
+* java-common v2.3.0
+* generator-ibm-service-enablement v0.0.97
+* generator-ibm-cloud-enablement v0.0.114
+* generator-liberty v6.0.1
