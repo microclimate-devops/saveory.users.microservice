@@ -17,8 +17,9 @@ import com.ibm.json.java.JSONObject;
 
 public class UsersDatabaseHandler {
 
-   public static final String DATABASE_NAME = "saveory_app";
-   public static final String DATABASE_CLIENT_URI = "mongodb://sapphires:saveoryArmory@sapphires-db.rtp.raleigh.ibm.com/saveory_app";
+   public static final String DATABASE_NAME = System.getenv("MONGO_DATABASE_NAME");
+   public static final String DATABASE_CLIENT_URI = "mongodb://"+System.getenv("MONGO_USER")+":"+System.getenv("MONGO_PWD")+"@"+
+		System.getenv("MONGO_HOST")+":"+System.getenv("MONGO_PORT")+"/"+UsersDatabaseHandler.DATABASE_NAME;
    public static final String DATABASE_COLLECTION_NAME = "users";
    private static MongoClient mongo_instance;
 
