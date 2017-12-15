@@ -1,4 +1,7 @@
-## Microservice
+## Users Microservice
+- [Saveory Project Website]()
+
+### Built With
 IBM Cloud Microservice Starter for Java - MicroProfile / Java EE
 
 [![](https://img.shields.io/badge/bluemix-powered-blue.svg)](https://bluemix.net)
@@ -13,7 +16,7 @@ IBM Cloud Microservice Starter for Java - MicroProfile / Java EE
 
 ### Summary
 
-The IBM Cloud Microservice Starter for Java - MicroProfile / Java EE provides a starting point for creating Java microservice applications running on [WebSphere Liberty](https://developer.ibm.com/wasdev/).
+The Users service provides authentication and preference management for Saveory. We began with the IBM Cloud Microservice Starter for Java - MicroProfile / Java EE provides a starting point for creating Java microservice applications running on [WebSphere Liberty](https://developer.ibm.com/wasdev/).
 
 To deploy this application to IBM Cloud using a toolchain click the **Create Toolchain** button.
 [![Create Toolchain](https://console.ng.bluemix.net/devops/graphics/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy/)
@@ -45,6 +48,9 @@ To build and run the application:
 1. `mvn install`
 1. `mvn liberty:run-server`
 
+To build and run the application using [Bluemix CLI](https://developer.ibm.com/microservice-builder/#getStarted):
+1. `bx dev build`
+2. `bx dev run`
 
 To run the application in Docker use the Docker file called `Dockerfile`. If you do not want to install Maven locally you can use `Dockerfile-tools` to build a container with Maven installed.
 
@@ -52,6 +58,7 @@ To run the application in Docker use the Docker file called `Dockerfile`. If you
 
 The application exposes the following endpoints:
 * Health endpoint: `<host>:<port>/<contextRoot>/health`
+* [API Resource Definition]()
 
 The context root is set in the `src/main/webapp/WEB-INF/ibm-web-ext.xml` file. The ports are set in the pom.xml file and exposed to the CLI in the cli-config.yml file.
 
