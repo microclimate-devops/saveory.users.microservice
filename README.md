@@ -70,3 +70,8 @@ This project was generated using:
 * generator-ibm-service-enablement v0.0.97
 * generator-ibm-cloud-enablement v0.0.114
 * generator-liberty v6.0.1
+
+#### Licenses
+
+- The LICENSE.IBM_Microservice_Builder applies to the project as a whole and was provided by IBM Microservice Builder
+- The LICENSE applies to original source code located in the `src/main/java/application/database/` and `src/main/java/application/rest/v1/` folders
